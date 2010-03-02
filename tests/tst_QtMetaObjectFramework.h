@@ -33,6 +33,25 @@ private slots:
 		QCOMPARE(props.count(), 1);
 		QCOMPARE(QString(props.first().name()), QString("prop"));
 	}
+
+	void testFindChild()
+	{
+		QObject o1;			o1.setObjectName("o1");
+		QObject o2a(&o1);	o2a.setObjectName("o2a");
+		QObject o2b(&o1);	o2b.setObjectName("o2b");
+		QObject o3(&o2a);	o3.setObjectName("o3");
+
+		QCOMPARE(QtMetaObjectFramework::findChild(&o1, "o1"), static_cast<QObject *>(0));
+
+		QCOMPARE(QtMetaObjectFramework::findChild(&o1, "o2a"), &o2a);
+		QCOMPARE(QtMetaObjectFramework::findChild(&o1, "o2b"), &o2b);
+
+		QCOMPARE(QtMetaObjectFramework::findChild(&o1, "o3"), static_cast<QObject *>(0));
+		QCOMPARE(QtMetaObjectFramework::findChild(&o1, "o2a.o3"), &o3);
+		QCOMPARE(QtMetaObjectFramework::findChild(&o1, "o2b.o3"), static_cast<QObject *>(0));
+		QCOMPARE(QtMetaObjectFramework::findChild(&o2a, "o3"), &o3);
+		QCOMPARE(QtMetaObjectFramework::findChild(&o2b, "o3"), static_cast<QObject *>(0));
+	}
 };
 
 QTEST_MAIN(tst_QtMetaObjectFramework);

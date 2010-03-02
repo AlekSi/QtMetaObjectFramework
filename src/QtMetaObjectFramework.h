@@ -13,10 +13,13 @@ class QTMETAOBJECTFRAMEWORKSHARED_EXPORT QtMetaObjectFramework : public QObject
     Q_DISABLE_COPY(QtMetaObjectFramework)
 
 public:
-    static QList<QMetaProperty> properties(const QMetaObject* metaObject);
-    static QList<QMetaProperty> properties(const QObject* object);
-    static QList<QMetaProperty> ownProperties(const QMetaObject* metaObject);
-    static QList<QMetaProperty> ownProperties(const QObject* object);
+	static QList<QMetaProperty> properties(const QMetaObject *metaObject);
+	static QList<QMetaProperty> properties(const QObject *object);
+	static QList<QMetaProperty> ownProperties(const QMetaObject *metaObject);
+	static QList<QMetaProperty> ownProperties(const QObject *object);
+
+	/*! Find child my dot.separated.name */
+	static QObject * findChild(const QObject *parent, const QString &name);
 
 private:
     static QList<QMetaProperty> propertiesWithOffset(const QMetaObject *metaObject, int offset);
