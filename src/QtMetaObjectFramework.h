@@ -18,6 +18,9 @@ public:
 	static QList<QMetaProperty> ownProperties(const QMetaObject *metaObject);
 	static QList<QMetaProperty> ownProperties(const QObject *object);
 
+	/*! Returns object's dot.separated.name */
+	static QString fullObjectName(const QObject *object);
+
 	/*! Find child my dot.separated.name */
 	static QObject * findChild(const QObject *parent, const QString &name);
 

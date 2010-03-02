@@ -34,6 +34,17 @@ private slots:
 		QCOMPARE(QString(props.first().name()), QString("prop"));
 	}
 
+	void testFullObjectName()
+	{
+		QObject o1;			o1.setObjectName("o1");
+		QObject o2(&o1);	o2.setObjectName("o2");
+		QObject o3(&o2);	o3.setObjectName("o3");
+
+		QCOMPARE(QtMetaObjectFramework::fullObjectName(&o1), QString("o1"));
+		QCOMPARE(QtMetaObjectFramework::fullObjectName(&o2), QString("o1.o2"));
+		QCOMPARE(QtMetaObjectFramework::fullObjectName(&o3), QString("o1.o2.o3"));
+	}
+
 	void testFindChild()
 	{
 		QObject o1;			o1.setObjectName("o1");

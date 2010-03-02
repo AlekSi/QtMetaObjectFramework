@@ -30,9 +30,25 @@ QList<QMetaProperty> QtMetaObjectFramework::propertiesWithOffset(const QMetaObje
     return result;
 }
 
+QString QtMetaObjectFramework::fullObjectName(const QObject *object)
+{
+	Q_ASSERT(object);
+	QString name = object->objectName();
+	Q_ASSERT(!name.isEmpty());
+	QObject *p = object->parent();
+	while(p) {
+		Q_ASSERT(!p->objectName().isEmpty());
+		name = p->objectName() + "." + name;
+		p = p->parent();
+	}
+	return name;
+}
+
+
 QObject * QtMetaObjectFramework::findChild(const QObject *parent, const QString &name)
 {
 	Q_ASSERT(parent);
+	Q_ASSERT(!name.isEmpty());
 	const QObjectList children = parent->children();
 	const QString directChildName = name.contains(".") ? name.section(".", 0, 0) : name;
 	const QString otherChildrenNames = name.section(".", 1);
