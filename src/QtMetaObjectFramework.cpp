@@ -62,3 +62,13 @@ QObject * QtMetaObjectFramework::findChild(const QObject *parent, const QString 
 	}
 	return 0;
 }
+
+QObject * QtMetaObjectFramework::root(const QObject *object)
+{
+	Q_ASSERT(object);
+	QObject *p = const_cast<QObject *>(object);
+	while(p->parent()) {
+		p = p->parent();
+	}
+	return p;
+}

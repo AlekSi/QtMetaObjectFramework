@@ -24,6 +24,9 @@ public:
 	/*! Find child my dot.separated.name */
 	static QObject * findChild(const QObject *parent, const QString &name);
 
+	/*! Returns top-level parent for object. */
+	static QObject * root(const QObject *object);
+
 private:
     static QList<QMetaProperty> propertiesWithOffset(const QMetaObject *metaObject, int offset);
 };

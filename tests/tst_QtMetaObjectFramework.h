@@ -17,10 +17,26 @@ class tst_QtMetaObjectFramework : public Base
 	Q_OBJECT
 	Q_PROPERTY(int prop READ prop);
 
-public:
+private:
 	int prop() const { return 42; }
 
+private:
+	QObject *o1, *o2a, *o2b, *o3;
+
 private slots:
+	void initTestCase()
+	{
+		o1 = new QObject();		o1->setObjectName("o1");
+		o2a = new QObject(o1);	o2a->setObjectName("o2a");
+		o2b = new QObject(o1);	o2b->setObjectName("o2b");
+		o3 = new QObject(o2a);	o3->setObjectName("o3");
+	}
+
+	void cleanupTestCase()
+	{
+		delete o1;
+	}
+
 	void testProperties()
 	{
 		QList<QMetaProperty> props = QtMetaObjectFramework::properties(this);
@@ -36,32 +52,30 @@ private slots:
 
 	void testFullObjectName()
 	{
-		QObject o1;			o1.setObjectName("o1");
-		QObject o2(&o1);	o2.setObjectName("o2");
-		QObject o3(&o2);	o3.setObjectName("o3");
-
-		QCOMPARE(QtMetaObjectFramework::fullObjectName(&o1), QString("o1"));
-		QCOMPARE(QtMetaObjectFramework::fullObjectName(&o2), QString("o1.o2"));
-		QCOMPARE(QtMetaObjectFramework::fullObjectName(&o3), QString("o1.o2.o3"));
+		QCOMPARE(QtMetaObjectFramework::fullObjectName(o1), QString("o1"));
+		QCOMPARE(QtMetaObjectFramework::fullObjectName(o2a), QString("o1.o2a"));
+		QCOMPARE(QtMetaObjectFramework::fullObjectName(o3), QString("o1.o2a.o3"));
 	}
 
 	void testFindChild()
 	{
-		QObject o1;			o1.setObjectName("o1");
-		QObject o2a(&o1);	o2a.setObjectName("o2a");
-		QObject o2b(&o1);	o2b.setObjectName("o2b");
-		QObject o3(&o2a);	o3.setObjectName("o3");
+		QCOMPARE(QtMetaObjectFramework::findChild(o1, "o1"), static_cast<QObject *>(0));
 
-		QCOMPARE(QtMetaObjectFramework::findChild(&o1, "o1"), static_cast<QObject *>(0));
+		QCOMPARE(QtMetaObjectFramework::findChild(o1, "o2a"), o2a);
+		QCOMPARE(QtMetaObjectFramework::findChild(o1, "o2b"), o2b);
 
-		QCOMPARE(QtMetaObjectFramework::findChild(&o1, "o2a"), &o2a);
-		QCOMPARE(QtMetaObjectFramework::findChild(&o1, "o2b"), &o2b);
+		QCOMPARE(QtMetaObjectFramework::findChild(o1, "o3"), static_cast<QObject *>(0));
+		QCOMPARE(QtMetaObjectFramework::findChild(o1, "o2a.o3"), o3);
+		QCOMPARE(QtMetaObjectFramework::findChild(o1, "o2b.o3"), static_cast<QObject *>(0));
+		QCOMPARE(QtMetaObjectFramework::findChild(o2a, "o3"), o3);
+		QCOMPARE(QtMetaObjectFramework::findChild(o2b, "o3"), static_cast<QObject *>(0));
+	}
 
-		QCOMPARE(QtMetaObjectFramework::findChild(&o1, "o3"), static_cast<QObject *>(0));
-		QCOMPARE(QtMetaObjectFramework::findChild(&o1, "o2a.o3"), &o3);
-		QCOMPARE(QtMetaObjectFramework::findChild(&o1, "o2b.o3"), static_cast<QObject *>(0));
-		QCOMPARE(QtMetaObjectFramework::findChild(&o2a, "o3"), &o3);
-		QCOMPARE(QtMetaObjectFramework::findChild(&o2b, "o3"), static_cast<QObject *>(0));
+	void testRoot()
+	{
+		QCOMPARE(QtMetaObjectFramework::root(o1), o1);
+		QCOMPARE(QtMetaObjectFramework::root(o2a), o1);
+		QCOMPARE(QtMetaObjectFramework::root(o3), o1);
 	}
 };
 
