@@ -1,7 +1,8 @@
-QT       = core
+QT = core
 
 TARGET = QtMetaObjectFramework
 TEMPLATE = lib
+CONFIG += static
 
 DEFINES += QTMETAOBJECTFRAMEWORK_LIBRARY
 

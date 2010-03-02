@@ -1,8 +1,9 @@
-TEMPLATE = app
 QT = core testlib
+
+TEMPLATE = app
 CONFIG += console
 CONFIG -= app_bundle
 
 HEADERS += tst_QtMetaObjectFramework.h
 
-LIBS += -L../src -lQtMetaObjectFramework
+LIBS += -L../src/ -lQtMetaObjectFramework
