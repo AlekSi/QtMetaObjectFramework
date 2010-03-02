@@ -73,12 +73,14 @@ QObject * QtMetaObjectFramework::root(const QObject *object)
 	return p;
 }
 
-QStringList QtMetaObjectFramework::hierarchy(const QObject *object)
+QMap<QString, QObject *> QtMetaObjectFramework::hierarchy(const QObject *object)
 {
 	Q_ASSERT(object);
-	QStringList res(fullObjectName(object));
+	QMap<QString, QObject *> res;
 	QObject *p = const_cast<QObject *>(object);
-	while((p = p->parent()))
-		res.push_front(fullObjectName(p));
+	while(p) {
+		res[fullObjectName(p)] = p;
+		p = p->parent();
+	}
 	return res;
 }

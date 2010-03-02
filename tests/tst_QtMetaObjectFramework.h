@@ -80,9 +80,9 @@ private slots:
 
 	void testHierarchy()
 	{
-		QCOMPARE(QtMetaObjectFramework::hierarchy(o1), QStringList() << "o1");
-		QCOMPARE(QtMetaObjectFramework::hierarchy(o2a), QStringList() << "o1" << "o1.o2a");
-		QCOMPARE(QtMetaObjectFramework::hierarchy(o3), QStringList() << "o1" << "o1.o2a" << "o1.o2a.o3");
+		QCOMPARE(QtMetaObjectFramework::hierarchy(o1).keys(), QList<QString>() << "o1");
+		QCOMPARE(QtMetaObjectFramework::hierarchy(o2a).keys(), QList<QString>() << "o1" << "o1.o2a");
+		QCOMPARE(QtMetaObjectFramework::hierarchy(o3).keys(), QList<QString>() << "o1" << "o1.o2a" << "o1.o2a.o3");
 	}
 };
 

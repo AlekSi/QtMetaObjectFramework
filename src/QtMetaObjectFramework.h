@@ -5,7 +5,7 @@
 #include <QtCore/QObject>
 #include <QtCore/QMetaProperty>
 #include <QtCore/QList>
-#include <QtCore/QStringList>
+#include <QtCore/QMap>
 class QMetaObject;
 
 class QTMETAOBJECTFRAMEWORKSHARED_EXPORT QtMetaObjectFramework : public QObject
@@ -22,14 +22,14 @@ public:
 	/*! Returns object's dot.separated.name */
 	static QString fullObjectName(const QObject *object);
 
-	/*! Find child my dot.separated.name */
+	/*! Find child by dot.separated.name */
 	static QObject * findChild(const QObject *parent, const QString &name);
 
 	/*! Returns top-level parent for object. */
 	static QObject * root(const QObject *object);
 
-	/*! Returns object's hierarchy: [grandpa, grandpa.pa, grandpa.pa.object] */
-	static QStringList hierarchy(const QObject *object);
+	/*! Returns object's hierarchy: {grandpa, grandpa.pa, grandpa.pa.object} */
+	static QMap<QString, QObject *> hierarchy(const QObject *object);
 
 private:
     static QList<QMetaProperty> propertiesWithOffset(const QMetaObject *metaObject, int offset);
