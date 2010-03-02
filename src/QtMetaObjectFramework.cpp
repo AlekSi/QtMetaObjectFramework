@@ -35,15 +35,13 @@ QString QtMetaObjectFramework::fullObjectName(const QObject *object)
 	Q_ASSERT(object);
 	QString name = object->objectName();
 	Q_ASSERT(!name.isEmpty());
-	QObject *p = object->parent();
-	while(p) {
+	QObject *p = const_cast<QObject *>(object);
+	while((p = p->parent())) {
 		Q_ASSERT(!p->objectName().isEmpty());
 		name = p->objectName() + "." + name;
-		p = p->parent();
 	}
 	return name;
 }
-
 
 QObject * QtMetaObjectFramework::findChild(const QObject *parent, const QString &name)
 {
@@ -54,10 +52,12 @@ QObject * QtMetaObjectFramework::findChild(const QObject *parent, const QString 
 	const QString otherChildrenNames = name.section(".", 1);
 	foreach(QObject *child, children) {
 		if (child->objectName() == directChildName) {
-			if (otherChildrenNames.isEmpty())
+			if (otherChildrenNames.isEmpty()) {
+				Q_ASSERT(fullObjectName(child) == (fullObjectName(parent) + "." + name));
 				return child;
-			else
+			} else {
 				return findChild(child, otherChildrenNames);
+			}
 		}
 	}
 	return 0;
@@ -71,4 +71,14 @@ QObject * QtMetaObjectFramework::root(const QObject *object)
 		p = p->parent();
 	}
 	return p;
+}
+
+QStringList QtMetaObjectFramework::hierarchy(const QObject *object)
+{
+	Q_ASSERT(object);
+	QStringList res(fullObjectName(object));
+	QObject *p = const_cast<QObject *>(object);
+	while((p = p->parent()))
+		res.push_front(fullObjectName(p));
+	return res;
 }
